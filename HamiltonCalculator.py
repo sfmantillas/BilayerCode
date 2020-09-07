@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 #Size of steps on radial coordinate
 def Delta_Mom(K,N):
-    return K/(N+1)
+    return K/(N)
 
 #Parametrization of the momentum in terms of tan(th)**r/sqrt(r)
 def Tan_Mom(i,K,N):
@@ -34,12 +34,12 @@ def Coulomb(k1,k2,th,Euv,K,G,A):
 
 #Hopping/pairing terms
 def Hopp_Pair(k1,k2,th,Euv,K,G,A,M,s):
-    return -1/(4*np.pi)*( Coulomb(k1,k2,th,K) )*s*( s+np.cos(M*th) )
+    return -1/(4*np.pi)*( Coulomb(k1,k2,th,Euv,K,G,A) )*s*( s+np.cos(M*th) )
 
 def SelfEnergy(k,Euv,K,N,M,G,A):
     Factor0 = G*Euv/( 4*np.pi*A**2 )
-    Factor1 = 1 - np.exp(-A**2*Norm_Mom(k1,k2,th)/K**2)
-    Factor2 = 1 - 2K**2/(A**2*k**2)*Factor1
+    Factor1 = 1 - np.exp(-A**2*Norm_Mom(k,k,0)/K**2)
+    Factor2 = 1 - 2*K**2/(A**2*k**2)*Factor1
     return Factor0*Factor2
 
 #Angular momentum channels
@@ -55,14 +55,13 @@ def Four_Hopp_Pair(k1,k2,l,Euv,K,G,A,M,s):
 #Import the self-energy from file InteMm.txt
 #SelfEnergyData = np.loadtxt(fname = "InteM1.txt")
 
-NNN = 10**1         #Matrix size
+NNN = 5*10**1         #Matrix size
 EUV = 1.            #UV cutoff energy
 KKK = 1.            #UV cutoff momentum
-RRR = 2             #Power of the tangent
-AAA = 2.            #Coulomb strength
-GGG = 1.
-LLL = 1             #Angular momentum channel
-MMM = 1             #Number of layers
+AAA = 11.            #Coulomb strength
+GGG = 0.1
+LLL = 2             #Angular momentum channel
+MMM = 2             #Number of layers
 
 """
 PRINTING OF TERMS TO DO THE BENCH-MARK
@@ -131,6 +130,9 @@ for i in range(0,NNN):
 #PRINTING OF THE FULL-HAMILTONIAN. Not recommended to activate for sizes NNN>4
 #print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in HamiltonMatrix]))
 
+
+np.savetxt('HamiltonCalculator0010.txt', HamiltonMatrix, fmt='%1.4e')   # use exponential notation
+
 #DIAGONALIZATION OF THE HAMILTONIAN
 HamiltonEigVals, HamiltonEigVecs = LA.eig( HamiltonMatrix )
 
@@ -154,3 +156,5 @@ print "First HamiltonEigVecs"
 print HamiltonEigVecs[:,0]
 """
 
+np.savetxt('ValsHamiltonCalculator0010.txt', HamiltonEigVals, fmt='%1.4e')   # use exponential notation
+np.savetxt('VecsHamiltonCalculator0010.txt', HamiltonEigVecs, fmt='%1.4e')   # use exponential notation
