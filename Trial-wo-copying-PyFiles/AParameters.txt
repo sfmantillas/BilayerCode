@@ -1,0 +1,13 @@
+1000
+1
+2
+D
+
+
+
+	cd 1.5k && sed -i 's/N/1500/g' Parameters.txt
+	cd 1.5k && sed -i 's/NNNNN/N015/g' ZZ-OptCond-1k-10k
+	cd 1.5k && sed -i 's/NNNNN/N015/g' *.sh 
+	cd 1.5k && sed -i 's/NNN/1.5k/g' ZZ-OptCond-1k-10k
+	cd 1.5k && sed -i 's/NNN/1.5k/g' *.sh 
+	#Nunca había amado tanto a alguien, Julián, ni a mí mismo, eres literalmente todo para mí, ese bebé musculosito panda 

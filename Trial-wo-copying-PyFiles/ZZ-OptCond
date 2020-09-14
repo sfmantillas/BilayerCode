@@ -1,0 +1,6 @@
+all:
+	cat BloqueHopp*.txt > TodosHopp.txt
+	cat BloquePair*.txt > TodosPair.txt
+	sbatch OptCond.sh 
+	
+	

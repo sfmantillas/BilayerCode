@@ -17,7 +17,7 @@ def Tan_Mom(i,K,N):
 
 #Jacobian of the lattice reconfig. to the tangent parametrization
 def Jacobi(i,K,N):
-    return 1.#Delta_Mom(N)*K**2*np.tan(np.pi/2*i/(N+1))**(2*R-1)/np.cos(np.pi/2*i/(N+1))**2
+    return Delta_Mom(K,N)#Delta_Mom(N)*K**2*np.tan(np.pi/2*i/(N+1))**(2*R-1)/np.cos(np.pi/2*i/(N+1))**2
 
 #Kinetic term of the m-layer system
 def Kin_Term(k,Euv,K,N,M):
@@ -37,10 +37,10 @@ def Hopp_Pair(k1,k2,th,Euv,K,G,A,M,s):
     return -1/(4*np.pi)*( Coulomb(k1,k2,th,Euv,K,G,A) )*s*( s+np.cos(M*th) )
 
 def SelfEnergy(k,Euv,K,N,M,G,A):
-    Factor0 = G*Euv/( 4*np.pi*A**2 )
-    Factor1 = 1 - np.exp(-A**2*Norm_Mom(k,k,0)/K**2)
-    Factor2 = 1 - 2*K**2/(A**2*k**2)*Factor1
-    return Factor0*Factor2
+    Factor0 = 1/( 4*np.pi*A**2 )
+    Factor1 = -K**2/( 2*A**4*k**2*np.pi )
+    Factor2 = +K**2/( 2*A**4*k**2*np.pi ) * np.exp(-A**2*k**2/K**2)
+    return Euv*G*(Factor0+Factor1+Factor2)
 
 #Angular momentum channels
 def Four_Hopp_Pair(k1,k2,l,Euv,K,G,A,M,s):
@@ -55,11 +55,11 @@ def Four_Hopp_Pair(k1,k2,l,Euv,K,G,A,M,s):
 #Import the self-energy from file InteMm.txt
 #SelfEnergyData = np.loadtxt(fname = "InteM1.txt")
 
-NNN = 5*10**1         #Matrix size
+NNN = 10**2         #Matrix size
 EUV = 1.            #UV cutoff energy
 KKK = 1.            #UV cutoff momentum
-AAA = 11.            #Coulomb strength
-GGG = 0.1
+AAA = 10.            #Spreading constant
+GGG = 1.            #Coupling constant
 LLL = 2             #Angular momentum channel
 MMM = 2             #Number of layers
 
@@ -82,8 +82,15 @@ MomentumAxis = np.zeros(NNN)
 for i in range(0, NNN):
     MomentumAxis[i] = Tan_Mom(i+1,KKK,NNN)
 
+#Kinetic energy
+KineticAxis = np.zeros(NNN)
+for i in range(0, NNN):
+    KineticAxis[i] = Kin_Term(MomentumAxis[i],EUV,KKK,NNN,MMM)
+
 #Self-energy evaluated at MomentumAxis
-#SelfEnergy = np.interp(MomentumAxis, SelfEnergyData[:,0], SelfEnergyData[:,1])
+SelfEnergyAxis = np.zeros(NNN)
+for i in range(0, NNN):
+    SelfEnergyAxis[i] = SelfEnergy(MomentumAxis[i],EUV,KKK,NNN,MMM,GGG,AAA)
 
 #print MomentumAxis
 #print SelfEnergy
@@ -109,7 +116,7 @@ for i in range(0,NNN):
         if i==j:
             #Selection of the kinetic/self-energy terms on the diagonal
             Mom = Tan_Mom(mx,KKK,NNN)
-            HamiltonMatrix[i+000][j+000] = Kin_Term(Mom,EUV,KKK,NNN,MMM) + AAA*SelfEnergy(Mom,EUV,KKK,NNN,MMM,GGG,AAA)
+            HamiltonMatrix[i+000][j+000] = Kin_Term(Mom,EUV,KKK,NNN,MMM) + SelfEnergy(Mom,EUV,KKK,NNN,MMM,GGG,AAA)
             HamiltonMatrix[i+NNN][j+NNN] = -HamiltonMatrix[i][j]
         else:
             #Off-diagonal terms
@@ -156,5 +163,10 @@ print "First HamiltonEigVecs"
 print HamiltonEigVecs[:,0]
 """
 
+np.savetxt('MomentumAxis.txt', MomentumAxis, fmt='%1.4e')   # use exponential notation
+np.savetxt('KineticAxis.txt', KineticAxis, fmt='%1.4e')   # use exponential notation
+np.savetxt('SelfEnergyAxis.txt', SelfEnergyAxis, fmt='%1.4e')   # use exponential notation
+
+
 np.savetxt('ValsHamiltonCalculator0010.txt', HamiltonEigVals, fmt='%1.4e')   # use exponential notation
-np.savetxt('VecsHamiltonCalculator0010.txt', HamiltonEigVecs, fmt='%1.4e')   # use exponential notation
+#np.savetxt('VecsHamiltonCalculator0010.txt', HamiltonEigVecs, fmt='%1.4e')   # use exponential notation
