@@ -28,7 +28,7 @@ echo "FIRST SCRIPT."
 echo "  Make Folders Alpha and copy files inside them... "
 echo
 
-for a in {001,002,005,010,020,050,100,200,500}; do
+for a in {001,002,005,010}; do
     echo "    A$a"
     #ls
     sed -i "s/AAA/${a}/g" ParametersABLN.txt
@@ -37,7 +37,7 @@ for a in {001,002,005,010,020,050,100,200,500}; do
     sed -i "s/AAA/A${a}/g" HamiltonCalculator.sh
     #sed -i "s/AAA/A${a}/g" BloquePair.sh
     #cat ParametersABLN.txt
-    for b in {01,02,05,10,20,50}; do 
+    for b in {01,02,05}; do 
         echo "        B$b"
         sed -i "s/BBB/${b}/g" ParametersABLN.txt
         sed -i "s/BbB/${b}/g" HamiltonCalculator.sh
@@ -45,7 +45,7 @@ for a in {001,002,005,010,020,050,100,200,500}; do
         sed -i "s/BBB/B${b}/g" HamiltonCalculator.sh
         #sed -i "s/BBB/B${b}/g" BloquePair.sh
         #cat ParametersABLN.txt
-        for l in {0,1,2,3,4,5}; do 
+        for l in {0,1,2,3}; do 
             echo "            L$l"
             sed -i "s/LLL/${l}/g" ParametersABLN.txt
             sed -i "s/LlL/${l}/g" HamiltonCalculator.sh
@@ -53,10 +53,11 @@ for a in {001,002,005,010,020,050,100,200,500}; do
             sed -i "s/LLL/L${l}/g" HamiltonCalculator.sh
             #sed -i "s/LLL/L${l}/g" BloquePair.sh
             for n in {001,002,005,010}; do 
+                echo "        N$n"
                 sed -i "s/NNN/${n}/g" ParametersABLN.txt
                 sed -i "s/NnN/${n}/g" HamiltonCalculator.sh
                 #sed -i "s/NnN/${n}/g" BloquePair.sh
-                sed -i "s/NNN/N${l}/g" HamiltonCalculator.sh
+                sed -i "s/NNN/N${n}/g" HamiltonCalculator.sh
                 #sed -i "s/NNN/N${l}/g" BloquePair.sh
                 
                 mkdir -p A$a/B$b/L$l/N$n

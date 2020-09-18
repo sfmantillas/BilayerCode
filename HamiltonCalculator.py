@@ -4,8 +4,18 @@ from numpy import linalg as LA
 import scipy as sc
 from scipy.interpolate import interp1d
 import scipy.integrate as integrate
+import scipy.special as special
 
-import matplotlib.pyplot as plt
+import random as rd
+
+from sympy import besseli, besselk
+
+#import matplotlib.pyplot as plt
+
+import time 
+start_time = time.time() 
+
+#import matplotlib.pyplot as plt
 
 #Size of steps on radial coordinate
 def Delta_Mom(K,N):
@@ -39,7 +49,7 @@ def Hopp_Pair(k1,k2,th,Euv,K,G,A,M,s):
 def SelfEnergy(k,Euv,K,N,M,G,A):
     Factor0 = 1/( 4*np.pi*A**2 )
     Factor1 = -K**2/( 2*A**4*k**2*np.pi )
-    Factor2 = +K**2/( 2*A**4*k**2*np.pi ) * np.exp(-A**2*k**2/K**2)
+    Factor2 = +K**2/( 2*A**4*k**2*np.pi ) * np.exp(-A**2*k**2/(2*K**2))
     return Euv*G*(Factor0+Factor1+Factor2)
 
 #Angular momentum channels
@@ -55,13 +65,25 @@ def Four_Hopp_Pair(k1,k2,l,Euv,K,G,A,M,s):
 #Import the self-energy from file InteMm.txt
 #SelfEnergyData = np.loadtxt(fname = "InteM1.txt")
 
-NNN = 10**2         #Matrix size
-EUV = 1.            #UV cutoff energy
-KKK = 1.            #UV cutoff momentum
-AAA = 10.            #Spreading constant
-GGG = 1.            #Coupling constant
-LLL = 2             #Angular momentum channel
-MMM = 2             #Number of layers
+Parameters = np.genfromtxt('ParametersABLN.txt') 
+
+eCharge = Parameters[0]
+eSpread = Parameters[1]
+eAngMom = Parameters[2]
+eRadMom = Parameters[3]
+#BloqueX = Parameters[4]
+#BloqueY = Parameters[5]
+
+#file1 = open("BloqueHopp.txt","w") 
+
+NNN = int(eRadMom*10)   #Matrix size
+EUV = 1.                #UV cutoff energy
+KKK = 1.                #UV cutoff momentum
+AAA = eSpread           #Spreading constant
+GGG = eCharge/10.       #Coupling constant
+LLL = eAngMom           #Angular momentum channel
+MMM = 2                 #Number of layers
+SSS = 3                 #Number of UV cutoff intervals
 
 """
 PRINTING OF TERMS TO DO THE BENCH-MARK
@@ -78,18 +100,18 @@ print Jacobi(1,RRR,KKK,NNN)
 """
 
 #Radial coordinate slots
-MomentumAxis = np.zeros(NNN)
-for i in range(0, NNN):
+MomentumAxis = np.zeros(NNN*SSS)
+for i in range(0, NNN*SSS):
     MomentumAxis[i] = Tan_Mom(i+1,KKK,NNN)
 
 #Kinetic energy
-KineticAxis = np.zeros(NNN)
-for i in range(0, NNN):
+KineticAxis = np.zeros(NNN*SSS)
+for i in range(0, NNN*SSS):
     KineticAxis[i] = Kin_Term(MomentumAxis[i],EUV,KKK,NNN,MMM)
 
 #Self-energy evaluated at MomentumAxis
-SelfEnergyAxis = np.zeros(NNN)
-for i in range(0, NNN):
+SelfEnergyAxis = np.zeros(NNN*SSS)
+for i in range(0, NNN*SSS):
     SelfEnergyAxis[i] = SelfEnergy(MomentumAxis[i],EUV,KKK,NNN,MMM,GGG,AAA)
 
 #print MomentumAxis
@@ -108,8 +130,8 @@ ax.set_xscale('log')
 plt.show()
 """
 #Bogoliubov Hamiltonian
-HamiltonMatrix = np.zeros((2*NNN,2*NNN))
-for i in range(0,NNN):
+HamiltonMatrix = np.zeros((2*NNN*SSS,2*NNN*SSS))
+for i in range(0,NNN*SSS):
     mx = i+1
     for j in range(0,i+1):
         my = j+1
@@ -126,13 +148,13 @@ for i in range(0,NNN):
             #Hopping terms 
             HamiltonMatrix[i+000][j+000] = Four_Hopp_Pair(Mom1,Mom2,LLL,EUV,KKK,GGG,AAA,MMM,+1)*np.sqrt( Jacobi(mx,KKK,NNN)*Jacobi(my,KKK,NNN) )
             HamiltonMatrix[j+000][i+000] = HamiltonMatrix[i][j]
-            HamiltonMatrix[i+NNN][j+NNN] = -HamiltonMatrix[i][j]
-            HamiltonMatrix[j+NNN][i+NNN] = -HamiltonMatrix[i][j]
+            HamiltonMatrix[i+NNN*SSS][j+NNN*SSS] = -HamiltonMatrix[i][j]
+            HamiltonMatrix[j+NNN*SSS][i+NNN*SSS] = -HamiltonMatrix[i][j]
             #Pairing terms
-            HamiltonMatrix[i+000][j+NNN] = Four_Hopp_Pair(Mom1,Mom2,LLL,EUV,KKK,GGG,AAA,MMM,-1)*np.sqrt( Jacobi(mx,KKK,NNN)*Jacobi(my,KKK,NNN) )
-            HamiltonMatrix[j+000][i+NNN] = +HamiltonMatrix[i+000][j+NNN]
-            HamiltonMatrix[i+NNN][j+000] = -HamiltonMatrix[i+000][j+NNN]
-            HamiltonMatrix[j+NNN][i+000] = -HamiltonMatrix[i+000][j+NNN]
+            HamiltonMatrix[i+000][j+NNN*SSS] = Four_Hopp_Pair(Mom1,Mom2,LLL,EUV,KKK,GGG,AAA,MMM,-1)*np.sqrt( Jacobi(mx,KKK,NNN)*Jacobi(my,KKK,NNN) )
+            HamiltonMatrix[j+000][i+NNN*SSS] = +HamiltonMatrix[i+000][j+NNN*SSS]
+            HamiltonMatrix[i+NNN*SSS][j+000] = -HamiltonMatrix[i+000][j+NNN*SSS]
+            HamiltonMatrix[j+NNN*SSS][i+000] = -HamiltonMatrix[i+000][j+NNN*SSS]
 
 #PRINTING OF THE FULL-HAMILTONIAN. Not recommended to activate for sizes NNN>4
 #print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in HamiltonMatrix]))
@@ -167,6 +189,7 @@ np.savetxt('MomentumAxis.txt', MomentumAxis, fmt='%1.4e')   # use exponential no
 np.savetxt('KineticAxis.txt', KineticAxis, fmt='%1.4e')   # use exponential notation
 np.savetxt('SelfEnergyAxis.txt', SelfEnergyAxis, fmt='%1.4e')   # use exponential notation
 
-
-np.savetxt('ValsHamiltonCalculator0010.txt', HamiltonEigVals, fmt='%1.4e')   # use exponential notation
+np.savetxt('ValsRe.txt', np.real(HamiltonEigVals), fmt='%1.4e')   # use exponential notation
+np.savetxt('ValsIm.txt', np.imag(HamiltonEigVals), fmt='%1.4e')   # use exponential notation
+np.savetxt('Vals.txt', HamiltonEigVals, fmt='%1.4e')   # use exponential notation
 #np.savetxt('VecsHamiltonCalculator0010.txt', HamiltonEigVecs, fmt='%1.4e')   # use exponential notation

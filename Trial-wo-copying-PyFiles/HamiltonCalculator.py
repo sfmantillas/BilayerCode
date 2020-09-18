@@ -17,17 +17,6 @@ start_time = time.time()
 
 #import matplotlib.pyplot as plt
 
-Parameters = np.genfromtxt('Parameters.txt') 
-
-eCharge = Parameters[0]
-eSpread = Parameters[1]
-eAngMom = Parameters[2]
-ThetaBins = Parameters[3]
-#BloqueX = Parameters[4]
-#BloqueY = Parameters[5]
-
-#file1 = open("BloqueHopp.txt","w") 
-
 #Size of steps on radial coordinate
 def Delta_Mom(K,N):
     return K/(N)
@@ -76,12 +65,23 @@ def Four_Hopp_Pair(k1,k2,l,Euv,K,G,A,M,s):
 #Import the self-energy from file InteMm.txt
 #SelfEnergyData = np.loadtxt(fname = "InteM1.txt")
 
-NNN = 10**2         #Matrix size
+Parameters = np.genfromtxt('Parameters.txt') 
+
+eCharge = Parameters[0]
+eSpread = Parameters[1]
+eAngMom = Parameters[2]
+eRadMom = Parameters[3]
+#BloqueX = Parameters[4]
+#BloqueY = Parameters[5]
+
+#file1 = open("BloqueHopp.txt","w") 
+
+NNN = eRadMom*10.   #Matrix size
 EUV = 1.            #UV cutoff energy
 KKK = 1.            #UV cutoff momentum
-AAA = 10.            #Spreading constant
-GGG = 1.            #Coupling constant
-LLL = 2             #Angular momentum channel
+AAA = eSpread       #Spreading constant
+GGG = eCharge/10.   #Coupling constant
+LLL = eAngMom       #Angular momentum channel
 MMM = 2             #Number of layers
 
 """
