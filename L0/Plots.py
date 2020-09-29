@@ -462,21 +462,21 @@ plt.suptitle('$\\ell=0$' ,fontsize=20, fontname='Times New Roman')
 #AAAAAAAAAA plt.ylim(-1.e-1,+1.e-1)
 
 
-plt.xlim(left  =0)
-plt.ylim(bottom=0)
+#plt.xlim(left  =0)
+#plt.ylim(bottom=0)
 #plt.yticks(np.arange(0.984,+1.004, step=0.002))
-plt.savefig('Complete-plot.pdf')
+plt.savefig('001Complete-plot.pdf')
 
-plt.ylim(-0.e-1,+1.e-1)
+plt.ylim(-1.e-1,+1.e-1)
 #plt.yticks(np.arange(0.984,+1.004, step=0.002))
-plt.savefig('Zoom-y-plot.pdf')
+plt.savefig('001Zoom-y-plot.pdf')
 
 plt.clf()
 plt.figure(figsize=(8,8))
 #plt.plot(MomentumAx20,Renormalization,'o')
 #plt.semilogx(
-plt.semilogy(
-MomentumAx0010011010,EigenValRe0010011010, marker='.',c=[1.0, 0.0, 0.0],ls='None',label='$a_{\\mathcal{K}}= 1,N=100$', markeredgecolor=[1.0, 0.0, 0.0,1.0], markersize=5)#,label='100')
+#plt.semilogy(
+plt.plot(MomentumAx0010011010,EigenValRe0010011010, marker='.',c=[1.0, 0.0, 0.0],ls='None',label='$a_{\\mathcal{K}}= 1,N=100$', markeredgecolor=[1.0, 0.0, 0.0,1.0], markersize=5)#,label='100')
 plt.plot(MomentumAx0010011020,EigenValRe0010011020, marker='.',c=[1.0, 0.1, 0.0],ls='None',label='$a_{\\mathcal{K}}= 1,N=200$', markeredgecolor=[1.0, 0.1, 0.0,1.0], markersize=5)
 plt.plot(MomentumAx0010011030,EigenValRe0010011030, marker='.',c=[1.0, 0.2, 0.0],ls='None',label='$a_{\\mathcal{K}}= 1,N=300$', markeredgecolor=[1.0, 0.2, 0.0,1.0], markersize=5)
 plt.plot(MomentumAx0010011040,EigenValRe0010011040, marker='.',c=[1.0, 0.3, 0.0],ls='None',label='$a_{\\mathcal{K}}= 1,N=400$', markeredgecolor=[1.0, 0.3, 0.0,1.0], markersize=5)
@@ -584,10 +584,11 @@ plt.suptitle('$\\ell=0$' ,fontsize=20, fontname='Times New Roman')
 #AAAAAAAAAA plt.ylim(-1.e-1,+1.e-1)
 
 
-plt.xlim(-0.e-2,+5.e-2)
-plt.ylim(+1.e-8,+1.e-1)
+plt.xlim(-5.e-2,+5.e-2)
+#plt.ylim(+1.e-8,+1.e-0)
+plt.ylim(-1.e-1,+1.e-1)
 #plt.yticks(np.arange(0.984,+1.004, step=0.002))
-plt.savefig('Zoom-plot.pdf')
+plt.savefig('001Zoom-plot.pdf')
 
 ######################################################################
 """
