@@ -445,7 +445,7 @@ plt.plot(MomentumAx900,CondOptic0900,'.')
 plt.plot(MomentumAx1000,CondOptic01000,'.')
 """
 plt.legend(bbox_to_anchor=(1.0, 1.0), loc=2, borderaxespad=0.)
-plt.suptitle('$\\ell=2, g_{\\mathcal{K}}=1.0$' ,fontsize=20, fontname='Times New Roman')
+plt.suptitle('$\\ell=0, g_{\\mathcal{K}}=1.0$' ,fontsize=20, fontname='Times New Roman')
 plt.xlabel('Momentum $(k/\\mathcal{K})$')
 plt.ylabel('Eigenenergy $E(k)/E_{\\mathrm{UV}}$')
 #plt.plot(MomentumAx10,CondOptic110,'.')
@@ -558,11 +558,11 @@ plt.plot(MomentumAx0010011050,KineticEne0010011050, marker='.',c=[0.0, 0.0, 0.0]
 
 
 plt.xlim(-3.e-2,+3.e-2)
-plt.ylim(-7.e-1,+7.e-1)
-#plt.yticks(np.arange(0.984,+1.004, step=0.002))
+plt.ylim(-1.e-1,+1.e-1)
+plt.yticks(np.arange(-1.e-1,+1.1e-1, step=1.e-2))
 
 plt.legend(bbox_to_anchor=(1.0, 1.0), loc=2, borderaxespad=0.)
-plt.suptitle('$\\ell=2, g_{\\mathcal{K}}=1.0$', fontsize=20, fontname='Times New Roman')
+plt.suptitle('$\\ell=0, g_{\\mathcal{K}}=0.1$', fontsize=20, fontname='Times New Roman')
 plt.xlabel('Momentum $(k/\\mathcal{K})$', fontsize=15, fontname='Times New Roman')
 plt.ylabel('Eigenenergy $E(k)/E_{\\mathrm{UV}}$', fontsize=15, fontname='Times New Roman')
 
